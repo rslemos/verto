@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { resource } from "@angular/core";
 import { signal } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 
@@ -7,11 +8,22 @@ import { RouterOutlet } from "@angular/router";
   selector: "app-root",
   styles: [],
   template: `
-    <h1>Hello, {{ title() }}</h1>
+    @if (greeting.isLoading()) {
+      <h1>Carregando...</h1>
+    } @else {
+      <h1>{{ greeting.value() }}</h1>
+    }
 
     <router-outlet/>
   `,
 })
 export class App {
-  protected readonly title = signal("verto");
+  protected readonly name = signal("verto");
+
+  protected readonly greeting = resource({
+    params: () => this.name(),
+    loader: async ({params: name}) => {
+      return await window.api.hello(name);
+    },
+  });
 }
