@@ -20,6 +20,7 @@
   "private": true,
   "packageManager": "npm@12.2.0",
   "dependencies": {
+    "pg": "^8.23.1",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
@@ -32,6 +33,7 @@
     "@angular/forms": "^22.2.0",
     "@angular/platform-browser": "^22.2.0",
     "@angular/router": "^22.2.0",
+    "@types/pg": "^8.23.1",
     "concurrently": "^10.0.6",
     "electron": "^44.9.0",
     "electron-builder": "^26.18.0",

@@ -1,0 +1,7 @@
+CREATE TABLE ativo
+(
+  id   SERIAL PRIMARY KEY,
+  nome TEXT NOT NULL
+);
+
+ALTER TABLE ativo OWNER TO rslemos;
