@@ -38,23 +38,23 @@
         }
       },
       "root": "",
-      "sourceRoot": "src",
+      "sourceRoot": "src/angular",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "browser": "src/main.ts",
-            "tsConfig": "tsconfig.app.json",
+            "browser": "src/angular/main.ts",
+            "tsConfig": "src/angular/tsconfig.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "src/public"
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/angular/styles.scss"
             ]
           },
           "configurations": {
