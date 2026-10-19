@@ -1,13 +1,17 @@
 {
   "name": "verto",
   "version": "0.0.0",
+  "main": "dist/verto/electron/main.js",
+  "electronmon": { "patterns": ["dist/verto/electron/**"] },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "build:electron": "tsc -p src/electron",
-    "start:electron": "npm run build:electron && electron dist/verto/electron/main.js"
+    "watch:electron": "tsc -p src/electron --watch --preserveWatchOutput",
+    "start:electron": "npm run build:electron && electron dist/verto/electron/main.js",
+    "dev:electron": "concurrently -n ng,tsc,app \"ng serve\" \"npm run watch:electron\" \"wait-on tcp:4200 file:dist/verto/electron/main.js && electronmon .\""
   },
   "private": true,
   "packageManager": "npm@12.2.0",
@@ -25,7 +29,10 @@
     "@angular/build": "^22.2.3",
     "@angular/cli": "^22.2.3",
     "@angular/compiler-cli": "^22.2.0",
+    "concurrently": "^10.0.6",
     "electron": "^44.9.0",
-    "typescript": "~6.0.2"
+    "electronmon": "^2.0.4",
+    "typescript": "~6.0.2",
+    "wait-on": "^9.5.1"
   }
 }
