@@ -1,0 +1,13 @@
+appId: com.github.rslemos.verto
+productName: Verto
+directories:
+  output: release
+files:
+  - dist/verto/**/*
+  - package.json
+electronDist: node_modules/electron/dist
+linux:
+  target: dir
+  executableName: verto
+  category: Office
+  icon: dist/verto/browser/verto.svg
