@@ -23,7 +23,7 @@ export class App {
   protected readonly greeting = resource({
     params: () => this.name(),
     loader: async ({params: name}) => {
-      return await window.api.hello(name);
+      return "Hello verto!";
     },
   });
 }

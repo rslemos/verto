@@ -1,7 +1,7 @@
 import { BrowserWindow } from "electron";
 import { app } from "electron";
 import * as path from "node:path";
-import { registerIpcHandlers } from "./ipc/register";
+import { registerIpcHandlers } from "./ipc";
 
 const isDev = !app.isPackaged;
 
