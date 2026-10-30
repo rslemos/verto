@@ -1,5 +1,6 @@
 import { ipcMain } from "electron";
 import { IpcMainInvokeEvent } from "electron";
+import { postgres } from "./postgres";
 import { ElectronApi } from "./api";
 
 
@@ -12,6 +13,9 @@ type IpcHandlers<T> = {
 };
 
 const handlers: IpcHandlers<ElectronApi> = {
+  "db:query": (event, sql, params, tx) => postgres.query(event.sender.id, sql, params, tx),
+  "db:begin": (event) => postgres.begin(event.sender.id),
+  "db:end": (event, tx, action) => postgres.end(event.sender.id, tx, action),
 };
 
 export function registerIpcHandlers(): void {
