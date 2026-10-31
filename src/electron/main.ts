@@ -3,6 +3,8 @@ import { app } from "electron";
 import * as path from "node:path";
 import { registerIpcHandlers } from "./ipc";
 
+const isDev = !app.isPackaged;
+
 let win: BrowserWindow | null;
 
 function createWindow() {
@@ -18,7 +20,11 @@ function createWindow() {
     console.log(`[renderer:${level}] ${message} (${sourceId}:${lineNumber})`);
   });
 
-  win.loadURL("http://localhost:4200");
+  if (isDev) {
+    win.loadURL("http://localhost:4200");
+  } else {
+    win.loadFile(path.join(__dirname, "../browser/index.html"));
+  }
 }
 
 app.whenReady().then(() => {

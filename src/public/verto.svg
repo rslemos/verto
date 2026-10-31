@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bg" x1="0" y1="0" x2="0.15" y2="1">
+      <stop offset="0" stop-color="#28549A"/>
+      <stop offset="0.48" stop-color="#102C68"/>
+      <stop offset="1" stop-color="#09183F"/>
+    </linearGradient>
+
+    <!-- Main ribbon gradient -->
+    <linearGradient id="front" x1="0" y1="0" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#86F6D0"/>
+      <stop offset="0.42" stop-color="#39E2B8"/>
+      <stop offset="1" stop-color="#00BDAA"/>
+    </linearGradient>
+
+    <!-- Rear ribbon gradient -->
+    <linearGradient id="rear" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8AF6D1"/>
+      <stop offset="0.48" stop-color="#42DDB9"/>
+      <stop offset="1" stop-color="#078F91"/>
+    </linearGradient>
+
+    <!-- Investment bars gradient -->
+    <linearGradient id="bars" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#65F0C7"/>
+      <stop offset="1" stop-color="#00BDAA"/>
+    </linearGradient>
+
+    <!-- Soft drop shadow -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="155%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2.5" result="blur"/>
+      <feOffset in="blur" dy="2.5" result="offset"/>
+      <feComponentTransfer in="offset" result="shadow">
+        <feFuncA type="linear" slope="0.32"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Thin luminous inner rim -->
+    <linearGradient id="rim" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#A8D7FF" stop-opacity="0.52"/>
+      <stop offset="0.55" stop-color="#FFFFFF" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#5AA8FF" stop-opacity="0.24"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Squircle shadow -->
+  <rect x="8" y="6" width="112" height="112" rx="27"
+        fill="#020918" opacity="0.5" filter="url(#shadow)"/>
+
+  <!-- Rounded-square background -->
+  <rect x="8" y="6" width="112" height="112" rx="27"
+        fill="url(#bg)"/>
+
+  <!-- Inner border highlight -->
+  <rect x="8.7" y="6.7" width="110.6" height="110.6" rx="26.3"
+        fill="none" stroke="url(#rim)" stroke-width="1"/>
+
+  <!-- Rear arm of the folded V -->
+  <path d="M 27.8 32.1
+           H 43.1
+           C 46.7 32.1 49.1 34.1 51.2 37.8
+           L 72.3 75.2
+           L 60.4 90.4
+           C 58.6 89.8 56.7 87.7 54.7 84.3
+           L 27.1 37.5
+           C 25.3 34.5 25.8 32.1 27.8 32.1 Z"
+        fill="url(#rear)"/>
+
+  <!-- Front arm of the V, covering the rear ribbon -->
+  <path d="M 84.1 32.1
+           H 101.5
+           C 104.5 32.1 105.1 34.4 103.4 37.2
+           L 71.2 88.9
+           C 67.1 95.4 61.1 95.4 56.9 88.9
+           L 51.7 80.8
+           L 62.8 61.6
+           L 78.2 37.3
+           C 80.1 33.9 81.8 32.1 84.1 32.1 Z"
+        fill="url(#front)"/>
+
+  <!-- Ascending investment bars -->
+  <g fill="url(#bars)">
+    <rect x="79.3" y="80.2" width="8.2" height="15.1" rx="2.5"/>
+    <rect x="90.0" y="74.0" width="8.2" height="21.3" rx="2.5"/>
+    <rect x="100.7" y="66.8" width="8.2" height="28.5" rx="2.5"/>
+  </g>
+</svg>
