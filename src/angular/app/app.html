@@ -1,3 +1,12 @@
 <h1>Hello, {{ title() }}</h1>
 
 <router-outlet/>
+
+<button type="button" (click)="pdfInput.click()">Upload de posição</button>
+<input
+  #pdfInput
+  type="file"
+  accept="application/pdf"
+  hidden
+  (change)="onPdfSelected($event)"
+/>

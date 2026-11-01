@@ -10,4 +10,8 @@ import { RouterOutlet } from "@angular/router";
 })
 export class App {
   protected readonly title = signal("verto");
+
+  protected onPdfSelected($event: Event) {
+    console.log("onPdfSelected", $event);
+  }
 }
