@@ -14,4 +14,19 @@ export class App {
   protected onPdfSelected($event: Event) {
     console.log("onPdfSelected", $event);
   }
+
+  protected async pickPdf(): Promise<void> {
+    try {
+      const [handle] = await window.showOpenFilePicker({
+        startIn: "downloads",
+        types: [{ description: "PDF", accept: { "application/pdf": [".pdf"] } }],
+        excludeAcceptAllOption: true,
+      });
+      const file = await handle.getFile();
+      console.log(`${file.name}: ${file.size} bytes`);
+    } catch (e) {
+      if (e instanceof DOMException && e.name === "AbortError") return; // cancelou o diálogo
+      throw e;
+    }
+  }
 }
