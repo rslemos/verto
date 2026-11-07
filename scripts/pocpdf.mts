@@ -1,10 +1,15 @@
-import { readFile } from "node:fs/promises";
-import { inspect } from "node:util";
+import {readFile} from "node:fs/promises";
+import {inspect} from "node:util";
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
+import {extractPaths} from "../src/angular/app/pdf/utils";
+import {withState} from "../src/angular/app/pdf/utils";
+import {setupPdfJs} from "../src/angular/app/pdf/utils";
+import {zip} from "../src/angular/app/pdf/utils";
+import {extractRectangles} from "../src/angular/app/pdf/utils";
 
-const file = process.argv[2];
+setupPdfJs(pdfjsLib);
 
-if (!file) throw new Error("Informe o caminho do PDF.");
+const file = "/home/rslemos/Downloads/PosicaoConsolidada_08687988788_20261103.pdf";
 
 const data = new Uint8Array(await readFile(file));
 const pdf = await pdfjsLib.getDocument({ data }).promise;
@@ -60,55 +65,9 @@ for (let n = 1; n <= pdf.numPages; n++) {
     args: ops.argsArray[i],
   }));
 
-  function descreverPath(args: any[]): string {
-    const [mask, [comandos], bounds] = args;
-
-    const tipos = [
-      "rectangle",
-      "moveTo",
-      "lineTo",
-      "curveTo",
-      "curveTo2",
-      "curveTo3",
-      "closePath",
-    ];
-
-    const mascara = tipos
-      .filter((_, bit) => mask & (1 << bit))
-      .join("+");
-
-    const sequencia: string[] = [];
-
-    for (let i = 0; i < comandos.length;) {
-      const codigo = comandos[i++];
-      const nome = nomesOps.get(codigo) ?? `?${codigo}`;
-      sequencia.push(nome);
-
-      // Quantidade de coordenadas consumidas por cada comando
-      const argumentos: Record<number, number> = {
-        [pdfjsLib.OPS.rectangle]: 4,
-        [pdfjsLib.OPS.moveTo]: 2,
-        [pdfjsLib.OPS.lineTo]: 2,
-        [pdfjsLib.OPS.curveTo]: 6,
-        [pdfjsLib.OPS.curveTo2]: 4,
-        [pdfjsLib.OPS.curveTo3]: 4,
-        [pdfjsLib.OPS.closePath]: 0,
-      };
-
-      i += argumentos[codigo] ?? 0;
-    }
-
-    return `constructPath/${mask}(${mascara})[${sequencia.join("/")}]`;
-  }
-
   const contagem = new Map<string, number>();
-
   for (const linha of linhas) {
-    const chave = linha.fn === "constructPath"
-      ? descreverPath(linha.args)
-      : linha.fn;
-
-    contagem.set(chave, (contagem.get(chave) ?? 0) + 1);
+    contagem.set(linha.fn, (contagem.get(linha.fn) ?? 0) + 1);
   }
   const cores = new Map<string, number>();
 
@@ -124,11 +83,11 @@ for (let n = 1; n <= pdf.numPages; n++) {
   console.log("\n--- Dimensões ---");
   console.log(page.view);
 
-  console.log("\n--- Texto ---");
+  console.log(`\n--- Texto --- (${itens.length})`);
   Object.entries(Object.groupBy(itens, item => item.y))
     .sort(([a], [b]) => (+b) - (+a))
     .forEach(([y, itens]) => {
-    console.log(`[${y}]: ${itens.map(item => `(${item.x}) "${item.str} [${item.w}×${item.h}]"`).join(" | ")}:`);
+    console.log(`[${y}]: ${itens!.map(item => `(${item.x}) "${item.str} [${item.w}×${item.h}]"`).join(" | ")}:`);
   });
 
   console.log("\n--- Operações (histograma) ---");
@@ -137,15 +96,39 @@ for (let n = 1; n <= pdf.numPages; n++) {
     { colors: true },
   ));
 
+  // console.log("\n--- Paths (decode completo) ---");
+  // console.log(inspect([...withState(zip(ops.fnArray, ops.argsArray), extractPaths)], { colors: true, depth: 4, breakLength: 120, maxArrayLength: null }));
+
+
+  const [rectgen, rejectgen1, rejectgen2] = extractRectangles(withState(zip(ops.fnArray, ops.argsArray), extractPaths));
+
+  const rectangles = [...rectgen];
+
+  console.log("\n--- Retângulos ---");
+  console.log(inspect(rectangles, { colors: true, depth: 4, breakLength: 120, maxArrayLength: null }));
+
+  console.log("\n--- Retângulos (comprimentos) ---");
+  console.log(inspect(rectangles.map(({ i, lengths }) => ({ i, min: Math.min(...lengths), max: Math.max(...lengths) }))))
+
+  console.log("\n--- ¬Retângulos por segmentos ---");
+  console.log(inspect([...rejectgen1], { colors: true, depth: 4, breakLength: 120, maxArrayLength: null }));
+
+  console.log("\n--- ¬Retângulos por ângulos ---");
+  console.log(inspect([...rejectgen2], { colors: true, depth: 4, breakLength: 120, maxArrayLength: null }));
+
+  break;
+
   console.log("\n--- Operações (lista completa) ---");
   console.log(inspect(linhas, { colors: true, depth: 4, breakLength: 120 }));
+
+  break;
 
   console.log("\n--- Cores de preenchimento ---");
   console.log(inspect([...cores], { colors: true }));
 
   console.log("\n--- Primeiros constructPath ---");
   console.log(inspect(
-    linhas.filter((l) => l.op === "constructPath").slice(0, 8),
+    linhas.filter((l) => l.fn === "constructPath").slice(0, 8),
     { depth: 8, colors: true },
   ));
 
